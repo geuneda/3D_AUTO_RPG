@@ -1,40 +1,59 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class StageManager : MonoBehaviour
 {
-    public List<GameObject> monsters = new List<GameObject>();
-
-    void Start()
+    public static StageManager Instance { get; private set; }
+    
+    [SerializeField] private GameObject monsterPrefab;
+    [SerializeField] private int monstersPerStage = 5;
+    
+    private List<Monster> activeMonsters = new List<Monster>();
+    private MapGenerator mapGenerator;
+    
+    private void Awake()
     {
-        // 현재 씬에 있는 모든 몬스터를 초기 목록에 추가
-        GameObject[] existingMonsters = GameObject.FindGameObjectsWithTag("Monster");
-        monsters.AddRange(existingMonsters);
+        Instance = this;
+        mapGenerator = GetComponent<MapGenerator>();
     }
-
-    void Update()
+    
+    private void Start()
     {
-        // 몬스터 리스트에서 죽은 몬스터를 제거
-        monsters.RemoveAll(monster => monster == null);
-
-        // 만약 몬스터가 모두 제거되었다면 스테이지 클리어
-        if (monsters.Count == 0)
+        SpawnMonstersForStage();
+    }
+    
+    private void SpawnMonstersForStage()
+    {
+        for (int i = 0; i < monstersPerStage; i++)
+        {
+            Vector3 randomPos = GetRandomSpawnPosition();
+            GameObject monsterObj = Instantiate(monsterPrefab, randomPos, Quaternion.identity);
+            Monster monster = monsterObj.GetComponent<Monster>();
+            activeMonsters.Add(monster);
+        }
+    }
+    
+    private Vector3 GetRandomSpawnPosition()
+    {
+        // 맵 내의 랜덤한 위치 반환
+        float x = Random.Range(1, mapGenerator.mapWidth - 1);
+        float z = Random.Range(1, mapGenerator.mapLength - 1);
+        return new Vector3(x, 1, z);
+    }
+    
+    public void MonsterDefeated(Monster monster)
+    {
+        activeMonsters.Remove(monster);
+        
+        if (activeMonsters.Count == 0)
         {
             StageCleared();
         }
     }
-
-    public void RegisterMonster(GameObject monster)
-    {
-        if (!monsters.Contains(monster))
-        {
-            monsters.Add(monster);
-        }
-    }
-
-    void StageCleared()
+    
+    private void StageCleared()
     {
         Debug.Log("Stage Cleared!");
-        // TODO: 다음 스테이지로 이동하는 로직 추가
+        // 다음 스테이지로 진행하는 로직 추가
     }
 }

@@ -15,6 +15,7 @@ public class MonsterAI : MonoBehaviour
     
     void Start()
     {
+        player = GameManager.Instance.CurrentPlayer.transform;
         agent = GetComponent<NavMeshAgent>();
         SetBehavior(new MonsterChaseBehavior()); // 초기 행동을 추적으로 설정
     }
