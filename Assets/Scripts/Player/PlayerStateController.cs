@@ -11,7 +11,6 @@ public class PlayerStateController : MonoBehaviour
 
     private void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
         SetState(new PlayerMovingState()); // 초기상태 이동상태
     }
 

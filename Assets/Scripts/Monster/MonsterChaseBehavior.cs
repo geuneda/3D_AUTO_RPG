@@ -1,4 +1,6 @@
-﻿public class MonsterChaseBehavior : IMonsterBehavior
+﻿using Monster;
+
+public class MonsterChaseBehavior : IMonsterBehavior
 {
     public void Execute(MonsterAI monster)
     {

@@ -1,3 +1,4 @@
+using Monster;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,6 +10,9 @@ public class MonsterAI : MonoBehaviour
     private NavMeshAgent agent;
     private IMonsterBehavior currentBehavior;
 
+    private IMonsterBehavior chaseBehavior = new MonsterChaseBehavior();
+    private IMonsterBehavior attackBehavior = new MonsterAttackBehavior();
+    
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -19,15 +23,16 @@ public class MonsterAI : MonoBehaviour
     {
         currentBehavior.Execute(this);
 
-        // 플레이어가 일정 범위 내로 들어왔는지 확인
         float distanceToPlayer = Vector3.Distance(player.position, transform.position);
+
+        // 플레이어와의 거리 기준으로 행동을 전환
         if (distanceToPlayer <= detectRange && !(currentBehavior is MonsterAttackBehavior))
         {
-            SetBehavior(new MonsterAttackBehavior());
+            SetBehavior(attackBehavior); // 기존 인스턴스를 사용
         }
         else if (distanceToPlayer > detectRange && !(currentBehavior is MonsterChaseBehavior))
         {
-            SetBehavior(new MonsterChaseBehavior());
+            SetBehavior(chaseBehavior); // 기존 인스턴스를 사용
         }
     }
 

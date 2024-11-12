@@ -10,7 +10,7 @@ public class MonsterSpawner : MonoBehaviour
 
     private void Start()
     {
-        stageManager = FindObjectOfType<StageManager>();
+        stageManager = FindAnyObjectByType<StageManager>();
         // 일정 시간마다 몬스터 스폰
         InvokeRepeating(nameof(SpawnMonster), 2f, spawnInterval);
     }
